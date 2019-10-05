@@ -1,6 +1,7 @@
 package io.jddf.gson;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,6 +19,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 public class ValidatorTest {
+  @Test
+  public void testMaxDepth() {
+    Gson gson = new Gson();
+    Schema schema = gson.fromJson("{\"definitions\": {\"x\": {\"ref\": \"x\"}}, \"ref\": \"x\"}", Schema.class);
+
+    Validator validator = new Validator();
+    validator.setMaxDepth(3);
+    assertThrows(MaxDepthExceededException.class, () -> validator.validate(schema, null));
+  }
+
+  @Test
+  public void testMaxErrors() throws MaxDepthExceededException {
+    Gson gson = new Gson();
+    Schema schema = gson.fromJson("{\"elements\": {\"type\": \"string\"}}", Schema.class);
+    JsonElement instance = gson.fromJson("[1, 1, 1, 1, 1]", JsonElement.class);
+
+    Validator validator = new Validator();
+    validator.setMaxErrors(3);
+    assertEquals(3, validator.validate(schema, instance).size());
+  }
+
   @TestFactory
   public List<DynamicTest> testSpec() throws UnsupportedEncodingException, MaxDepthExceededException {
     List<DynamicTest> tests = new ArrayList<>();

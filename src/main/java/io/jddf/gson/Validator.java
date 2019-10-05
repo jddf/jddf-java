@@ -1,6 +1,5 @@
 package io.jddf.gson;
 
-import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -13,8 +12,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 public class Validator {
+  private int maxDepth;
+  private int maxErrors;
+
   public List<ValidationError> validate(Schema schema, JsonElement instance) throws MaxDepthExceededException {
-    VM vm = new VM(0, 0, schema);
+    VM vm = new VM(this.maxDepth, this.maxErrors, schema);
 
     try {
       vm.validate(schema, instance, null);
@@ -29,17 +31,17 @@ public class Validator {
     private ArrayList<String> instanceTokens;
     private ArrayList<ArrayList<String>> schemaTokens;
     private ArrayList<ValidationError> errors;
-    private int maxErrors;
     private int maxDepth;
+    private int maxErrors;
     private Schema root;
 
-    public VM(int maxErrors, int maxDepth, Schema root) {
+    public VM(int maxDepth, int maxErrors, Schema root) {
       this.instanceTokens = new ArrayList<>();
       this.schemaTokens = new ArrayList<>();
       this.schemaTokens.add(new ArrayList<>());
       this.errors = new ArrayList<>();
-      this.maxErrors = maxErrors;
       this.maxDepth = maxDepth;
+      this.maxErrors = maxErrors;
       this.root = root;
     }
 
@@ -49,7 +51,7 @@ public class Validator {
       case EMPTY:
         return;
       case REF:
-        if (this.schemaTokens.size() == this.maxErrors) {
+        if (this.schemaTokens.size() == this.maxDepth) {
           throw new MaxDepthExceededException();
         }
 
@@ -290,10 +292,60 @@ public class Validator {
       validationError.setInstancePath(new ArrayList<>(this.instanceTokens));
       validationError.setSchemaPath(new ArrayList<>(this.schemaTokens.get(this.schemaTokens.size() - 1)));
       this.errors.add(validationError);
+
+      if (this.errors.size() == this.maxErrors) {
+        throw new TooManyErrorsException();
+      }
     }
   }
 
   private static class TooManyErrorsException extends Exception {
     private static final long serialVersionUID = 8424595334761933278L;
+  }
+
+  public int getMaxDepth() {
+    return maxDepth;
+  }
+
+  public void setMaxDepth(int maxDepth) {
+    this.maxDepth = maxDepth;
+  }
+
+  public int getMaxErrors() {
+    return maxErrors;
+  }
+
+  public void setMaxErrors(int maxErrors) {
+    this.maxErrors = maxErrors;
+  }
+
+  @Override
+  public String toString() {
+    return "Validator [maxDepth=" + maxDepth + ", maxErrors=" + maxErrors + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + maxDepth;
+    result = prime * result + maxErrors;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Validator other = (Validator) obj;
+    if (maxDepth != other.maxDepth)
+      return false;
+    if (maxErrors != other.maxErrors)
+      return false;
+    return true;
   }
 }
