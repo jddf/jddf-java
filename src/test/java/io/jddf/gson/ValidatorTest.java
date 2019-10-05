@@ -17,13 +17,18 @@ import org.junit.Test;
 
 public class ValidatorTest {
   @Test
-  public void testSpec() throws UnsupportedEncodingException {
+  public void testSpec() throws UnsupportedEncodingException, MaxDepthExceededException {
     this.testSpecFile("spec/tests/validation/001-empty.json");
-    // this.testSpecFile("spec/tests/validation/002-ref.json");
+    this.testSpecFile("spec/tests/validation/002-ref.json");
     this.testSpecFile("spec/tests/validation/003-type.json");
+    this.testSpecFile("spec/tests/validation/004-enum.json");
+    this.testSpecFile("spec/tests/validation/005-elements.json");
+    this.testSpecFile("spec/tests/validation/006-properties.json");
+    this.testSpecFile("spec/tests/validation/007-values.json");
+    this.testSpecFile("spec/tests/validation/008-discriminator.json");
   }
 
-  public void testSpecFile(String file) throws UnsupportedEncodingException {
+  public void testSpecFile(String file) throws UnsupportedEncodingException, MaxDepthExceededException {
     ClassLoader classLoader = this.getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream(file);
     Gson gson = new Gson();
@@ -54,7 +59,12 @@ public class ValidatorTest {
         System.out.println(suite.schema);
         System.out.println(testCase.instance);
 
-        assertEquals(expected, validator.validate(suite.schema, testCase.instance));
+        List<ValidationError> actual = validator.validate(suite.schema, testCase.instance);
+
+        expected.sort((e1, e2) -> String.join("", e1.getSchemaPath()).compareTo(String.join("", e2.getSchemaPath())));
+        actual.sort((e1, e2) -> String.join("", e1.getSchemaPath()).compareTo(String.join("", e2.getSchemaPath())));
+
+        assertEquals(expected, actual);
       }
     }
   }

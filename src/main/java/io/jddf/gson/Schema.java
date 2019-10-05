@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Schema {
+  private Map<String, Schema> definitions;
   private String ref;
   private Type type;
   @SerializedName("enum")
@@ -36,6 +37,14 @@ public class Schema {
     } else {
       return Form.EMPTY;
     }
+  }
+
+  public Map<String, Schema> getDefinitions() {
+    return definitions;
+  }
+
+  public void setDefinitions(Map<String, Schema> definitions) {
+    this.definitions = definitions;
   }
 
   public String getRef() {
@@ -115,6 +124,7 @@ public class Schema {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((additionalProperties == null) ? 0 : additionalProperties.hashCode());
+    result = prime * result + ((definitions == null) ? 0 : definitions.hashCode());
     result = prime * result + ((discriminator == null) ? 0 : discriminator.hashCode());
     result = prime * result + ((elements == null) ? 0 : elements.hashCode());
     result = prime * result + ((enm == null) ? 0 : enm.hashCode());
@@ -139,6 +149,11 @@ public class Schema {
       if (other.additionalProperties != null)
         return false;
     } else if (!additionalProperties.equals(other.additionalProperties))
+      return false;
+    if (definitions == null) {
+      if (other.definitions != null)
+        return false;
+    } else if (!definitions.equals(other.definitions))
       return false;
     if (discriminator == null) {
       if (other.discriminator != null)
@@ -182,8 +197,8 @@ public class Schema {
 
   @Override
   public String toString() {
-    return "Schema [additionalProperties=" + additionalProperties + ", discriminator=" + discriminator + ", elements="
-        + elements + ", enm=" + enm + ", optionalProperties=" + optionalProperties + ", properties=" + properties
-        + ", ref=" + ref + ", type=" + type + ", values=" + values + "]";
+    return "Schema [additionalProperties=" + additionalProperties + ", definitions=" + definitions + ", discriminator="
+        + discriminator + ", elements=" + elements + ", enm=" + enm + ", optionalProperties=" + optionalProperties
+        + ", properties=" + properties + ", ref=" + ref + ", type=" + type + ", values=" + values + "]";
   }
 }
