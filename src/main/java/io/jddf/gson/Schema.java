@@ -17,6 +17,127 @@ public class Schema {
   private Schema values;
   private Discriminator discriminator;
 
+  public void verify() throws InvalidSchemaException {
+    this.verify(this);
+  }
+
+  private void verify(Schema root) throws InvalidSchemaException {
+    boolean isEmpty = true;
+
+    if (this.getRef() != null) {
+      isEmpty = false;
+      if (root.getDefinitions() == null || !root.getDefinitions().containsKey(this.getRef())) {
+        throw new NoSuchDefinitionException(this.getRef());
+      }
+    }
+
+    if (this.getType() != null) {
+      if (!isEmpty) {
+        throw new InvalidFormException();
+      }
+
+      isEmpty = false;
+    }
+
+    if (this.getEnum() != null) {
+      if (!isEmpty) {
+        throw new InvalidFormException();
+      }
+
+      isEmpty = false;
+
+      if (this.getEnum().isEmpty()) {
+        throw new EmptyEnumException();
+      }
+    }
+
+    if (this.getElements() != null) {
+      if (!isEmpty) {
+        throw new InvalidFormException();
+      }
+
+      isEmpty = false;
+
+      this.getElements().verify(root);
+    }
+
+    if (this.getProperties() != null) {
+      if (!isEmpty) {
+        throw new InvalidFormException();
+      }
+
+      isEmpty = false;
+
+      for (Schema schema : this.getProperties().values()) {
+        schema.verify(root);
+      }
+    }
+
+    if (this.getOptionalProperties() != null) {
+      if (!isEmpty) {
+        throw new InvalidFormException();
+      }
+
+      isEmpty = false;
+
+      for (Schema schema : this.getOptionalProperties().values()) {
+        schema.verify(root);
+      }
+    }
+
+    if (this.getProperties() != null && this.getOptionalProperties() != null) {
+      Set<String> properties = this.getProperties().keySet();
+      properties.retainAll(this.getOptionalProperties().keySet());
+
+      if (!properties.isEmpty()) {
+        throw new RepeatedPropertyException((String) properties.toArray()[0]);
+      }
+    }
+
+    if (this.getValues() != null) {
+      if (!isEmpty) {
+        throw new InvalidFormException();
+      }
+
+      isEmpty = false;
+
+      this.getValues().verify(root);
+    }
+
+    if (this.getDiscriminator() != null) {
+      if (!isEmpty) {
+        throw new InvalidFormException();
+      }
+
+      isEmpty = false;
+
+      if (this.getDiscriminator().getTag() == null) {
+        throw new InvalidSchemaException();
+      }
+
+      if (this.getDiscriminator().getMapping() == null) {
+        throw new InvalidSchemaException();
+      }
+
+      for (Schema schema : this.getDiscriminator().getMapping().values()) {
+        schema.verify(root);
+
+        if (schema.getForm() != Form.PROPERTIES) {
+          throw new InvalidFormException();
+        }
+
+        if (schema.getProperties() != null && schema.getProperties().containsKey(this.getDiscriminator().getTag())) {
+          throw new RepeatedPropertyException(this.getDiscriminator().getTag());
+        }
+
+        if (schema.getOptionalProperties() != null
+            && schema.getOptionalProperties().containsKey(this.getDiscriminator().getTag())) {
+          throw new RepeatedPropertyException(this.getDiscriminator().getTag());
+        }
+      }
+    }
+  }
+
   public Form getForm() {
     if (this.getRef() != null) {
       return Form.REF;
