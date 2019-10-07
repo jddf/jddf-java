@@ -1,5 +1,13 @@
 package io.jddf.gson;
 
+/**
+ * NoSuchDefinitionException indicates a reference to a definition which doesn't
+ * exist.
+ * <p>
+ *
+ * The "name" of NoSuchDefinitionException indicates the name of the referred-to
+ * definition which doesn't exist.
+ */
 public class NoSuchDefinitionException extends InvalidSchemaException {
   private static final long serialVersionUID = -3765988719558355706L;
   private String name;

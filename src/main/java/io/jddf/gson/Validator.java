@@ -11,10 +11,45 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+/**
+ * Validator evaluates inputs (called "instances") against JDDF schemas.
+ * <p>
+ *
+ * To help improve performance and prevent accidental stack overflows, Validator
+ * supports two "circuit-breaker" mechanisms:
+ * <p>
+ *
+ * The "max depth" of a Validator is the maximum number of JDDF {@code ref}s it
+ * will follow. This is to help resist against schemas which have circular
+ * definitions. When the max depth is exceeded,
+ * {@link #validate(Schema, JsonElement)} throws MaxDepthExceededException.
+ * <p>
+ *
+ * The "max errors" of a Validator is the maximum number of validation errors
+ * that should be returned. You can use this to optimize JDDF validation for
+ * your use-case. For example, if you just want to know whether there's at least
+ * one validation error, then set the max errors to 1. If you have a maximum
+ * number of errors you can ultimately show to your users, you can set the max
+ * errors to this value.
+ * <p>
+ *
+ * By default, Validator does not enforce a maximum depth, and does not have a
+ * maximum number of errors to return.
+ */
 public class Validator {
   private int maxDepth;
   private int maxErrors;
 
+  /**
+   * Validate an input JSON element (called an "instance") against a Schema.
+   *
+   * @param schema   the schema to validate against
+   * @param instance the instance to validate
+   * @return the validation errors associated with the instance validated against
+   *         the schema
+   * @throws MaxDepthExceededException if the max depth of this validator is
+   *                                   exceeded
+   */
   public List<ValidationError> validate(Schema schema, JsonElement instance) throws MaxDepthExceededException {
     VM vm = new VM(this.maxDepth, this.maxErrors, schema);
 
@@ -303,18 +338,48 @@ public class Validator {
     private static final long serialVersionUID = 8424595334761933278L;
   }
 
+  /**
+   * Get the maximum depth of this validator.
+   * <p>
+   *
+   * @return the maximum depth of this validator
+   */
   public int getMaxDepth() {
     return maxDepth;
   }
 
+  /**
+   * Set the maximum depth of this validator.
+   * <p>
+   *
+   * Setting the maximum depth to zero has the same effect as disabling a max
+   * depth altogether.
+   *
+   * @param maxDepth the max depth
+   */
   public void setMaxDepth(int maxDepth) {
     this.maxDepth = maxDepth;
   }
 
+  /**
+   * Get the maximum number of errors this validator should return.
+   * <p>
+   *
+   * @return the max errors of this validator
+   */
   public int getMaxErrors() {
     return maxErrors;
   }
 
+  /**
+   * Set the maximum number of errors this validator should return.
+   * <p>
+   *
+   * Setting the max errors to zero has the same effect as forcing the validator
+   * to always return all errors.
+   *
+   * @param maxErrors the max errors
+   */
   public void setMaxErrors(int maxErrors) {
     this.maxErrors = maxErrors;
   }

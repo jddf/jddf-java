@@ -1,5 +1,15 @@
 package io.jddf.gson;
 
+/**
+ * RepeatedPropertyException indicates that a property was overdetermined in a
+ * schema.
+ * <p>
+ *
+ * This can arise from some combination of {@code properties},
+ * {@code optionalProperties}, and {@code discriminator.tag} referring to the
+ * same property. Doing so is incorrect in JDDF, as it makes it ambiguous what
+ * the requirements on a property are.
+ */
 public class RepeatedPropertyException extends InvalidSchemaException {
   private static final long serialVersionUID = -8326866690426213354L;
   private String property;

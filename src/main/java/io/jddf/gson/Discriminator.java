@@ -2,6 +2,9 @@ package io.jddf.gson;
 
 import java.util.Map;
 
+/**
+ * Discriminator represents the {@code discriminator} part of a Schema.
+ */
 public class Discriminator {
   private String tag;
   private Map<String, Schema> mapping;

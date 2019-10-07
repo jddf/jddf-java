@@ -4,6 +4,19 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Schema represents a JSON Data Definition Format schema.
+ * <p>
+ *
+ * This class is designed to be friendly with Gson. You can serialize or
+ * deserialize instances of this class with JSON using Gson.
+ * <p>
+ *
+ * The rules for what makes a JDDF schema "correct" are a bit more complex than
+ * what can be idiomatically expressed in Java's type system. For this reason,
+ * there's a {@link #verify()} method which will throw an exception if the
+ * schema is invalid.
+ */
 public class Schema {
   private Map<String, Schema> definitions;
   private String ref;
@@ -17,6 +30,12 @@ public class Schema {
   private Schema values;
   private Discriminator discriminator;
 
+  /**
+   * Verify that this schema is a "correct" schema according to the JDDF spec.
+   * <p>
+   *
+   * @throws InvalidSchemaException if the Schema is incorrect
+   */
   public void verify() throws InvalidSchemaException {
     this.verify(this);
   }
@@ -138,6 +157,20 @@ public class Schema {
     }
   }
 
+  /**
+   * Determines the "form" this schema takes on.
+   * <p>
+   *
+   * All correct JDDF schemas fall into one of eight "forms"; these forms are
+   * represented by the Form enum in this package.
+   * <p>
+   *
+   * The output of this method is not meaningful if the schema is not correct; see
+   * {@link #verify()} to check that a schema is correct.
+   * <p>
+   *
+   * @return the Form this schema takes on
+   */
   public Form getForm() {
     if (this.getRef() != null) {
       return Form.REF;

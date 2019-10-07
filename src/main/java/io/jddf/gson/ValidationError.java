@@ -2,6 +2,20 @@ package io.jddf.gson;
 
 import java.util.List;
 
+/**
+ * ValidationError represents a single JDDF validation error.
+ * <p>
+ *
+ * A ValidationError has an "instance path", which represents a JSON Pointer
+ * into the bad part of the input, and a "schema path", which represents a JSON
+ * Pointer into the part of the schema which raised the error. The JDDF
+ * specification describes precisely how these paths should be constructed.
+ * <p>
+ *
+ * Instances of this class are returned by
+ * {@link Validator#validate(Schema, com.google.gson.JsonElement)}. That method
+ * is the most common way to construct instances of this class.
+ */
 public class ValidationError {
   private List<String> instancePath;
   private List<String> schemaPath;

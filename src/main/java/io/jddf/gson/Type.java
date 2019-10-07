@@ -2,6 +2,9 @@ package io.jddf.gson;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Type represents the eleven values the {@code type} keyword can take in JDDF.
+ */
 public enum Type {
   @SerializedName("boolean")
   BOOLEAN,
