@@ -43,6 +43,10 @@ public class Schema {
   private void verify(Schema root) throws InvalidSchemaException {
     boolean isEmpty = true;
 
+    if (this == root && this.getDefinitions() != null) {
+      throw new NonRootDefinitionException();
+    }
+
     if (this.getRef() != null) {
       isEmpty = false;
       if (root.getDefinitions() == null || !root.getDefinitions().containsKey(this.getRef())) {
