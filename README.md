@@ -18,7 +18,7 @@ If you're using Gradle:
 
 ```gradle
 dependencies {
-  implementation 'io.jddf.gson:jddf-gson:0.1.0'
+  implementation 'io.jddf.gson:jddf-gson:0.1.2'
 }
 ```
 
@@ -28,7 +28,7 @@ Or Maven:
 <dependency>
   <groupId>io.jddf.gson</groupId>
   <artifactId>jddf-gson</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 
