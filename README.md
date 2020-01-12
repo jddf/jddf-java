@@ -1,4 +1,6 @@
-# jddf-java [![Javadocs](https://javadoc.io/badge/io.jddf.gson/jddf-gson.svg)](https://javadoc.io/doc/io.jddf.gson/jddf-gson)
+# jddf-java [![][maven-badge]][maven-url] [![][ci-badge]][ci-url]
+
+> Documentation on JavaDoc.io: https://javadoc.io/doc/io.jddf.gson/jddf-gson
 
 This package is a Java implementation of **JSON Data Definition Format**. In
 particular, it lets you:
@@ -11,6 +13,11 @@ This package integrates with Google's [gson](https://github.com/google/gson), a
 popular JSON implementation for Java. If you would like support for another JSON
 implementation for Java, please open a GitHub ticket! Your request will be
 warmly welcomed.
+
+[maven-badge]: https://img.shields.io/maven-central/v/io.jddf.gson/jddf-gson
+[ci-badge]: https://github.com/jddf/jddf-java/workflows/Java%20CI/badge.svg?branch=master
+[maven-url]: https://search.maven.org/artifact/io.jddf.gson/jddf-gson
+[ci-url]: https://github.com/jddf/jddf-java/actions
 
 ## Installation
 
@@ -36,10 +43,10 @@ Or Maven:
 
 The three most important classes offered by this package are:
 
-* [`Schema`][schema], which represents a JDDF schema
-* [`Validator`][validator], which can find validation errors of JSON data
+- [`Schema`][schema], which represents a JDDF schema
+- [`Validator`][validator], which can find validation errors of JSON data
   against instances of [`Schema`][schema], and
-* [`ValidationError`][validation-error], which represents a single validation
+- [`ValidationError`][validation-error], which represents a single validation
   problem with the input. [`Validator#validate`][validator-validate] returns a
   list of these.
 
