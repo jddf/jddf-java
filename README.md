@@ -15,9 +15,9 @@ implementation for Java, please open a GitHub ticket! Your request will be
 warmly welcomed.
 
 [maven-badge]: https://img.shields.io/maven-central/v/io.jddf.gson/jddf-gson
-[ci-badge]: https://github.com/jddf/jddf-ruby/workflows/Ruby%20CI/badge.svg?branch=master
+[ci-badge]: https://github.com/jddf/jddf-java/workflows/Java%20CI/badge.svg?branch=master
 [maven-url]: https://search.maven.org/artifact/io.jddf.gson/jddf-gson
-[ci-url]: https://github.com/jddf/jddf-ruby/actions
+[ci-url]: https://github.com/jddf/jddf-java/actions
 
 ## Installation
 
